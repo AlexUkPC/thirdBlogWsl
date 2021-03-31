@@ -1,0 +1,44 @@
+version: "3"
+services:
+  web_thirdblogwsl:
+    build:
+      context: .
+      args:
+        USER_ID: "${USER_ID:-1000}"
+        GROUP_ID: "${GROUP_ID:-1000}"
+    ports:
+      - "3004:3000"
+    volumes: 
+      - ./thirdblogwsl:/opt/app
+      - gem_cache_thirdblogwsl:/gems
+    env_file: 
+      - .env/development/database_thirdblogwsl
+      - .env/development/web_thirdblogwsl
+    environment: 
+      - WEBPACKER_DEV_SERVER_HOST=webpack_dev_server_thirdblogwsl
+  webpack_dev_server_thirdblogwsl:
+    build:
+      context: .
+      args:
+        USER_ID: "${USER_ID:-1000}"
+        GROUP_ID: "${GROUP_ID:-1000}"
+    command: ./bin/webpack-dev-server
+    ports: 
+      - "3039:3039"
+    volumes: 
+      - ./thirdblogwsl:/opt/app
+      - gem_cache_thirdblogwsl:/gems
+    env_file: 
+      - .env/development/database_thirdblogwsl
+      - .env/development/web_thirdblogwsl
+    environment: 
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+  database_thirdblogwsl:
+    image: postgres
+    env_file: 
+      - .env/development/database_thirdblogwsl
+    volumes: 
+      - db_data_thirdblogwsl:/var/lib/postgresql/data
+volumes: 
+  db_data_thirdblogwsl:
+  gem_cache_thirdblogwsl:

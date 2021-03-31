@@ -1,0 +1,31 @@
+version: "3" 
+services:
+  web_thirdblogwsl:
+    image: alexrogna/thirdblogwsl_web:prod
+    expose:
+      - 3000
+    env_file:
+      - .env/production/database_thirdblogwsl
+      - .env/production/web_thirdblogwsl
+    environment:
+      - VIRTUAL_HOST=thirdblogwsl.alexrogna.com
+      - VIRTUAL_PORT=3000
+      - LETSENCRYPT_HOST=thirdblogwsl.alexrogna.com
+    restart: always
+
+  database_thirdblogwsl:
+    image: postgres
+    env_file:
+      - .env/production/database_thirdblogwsl
+    volumes:
+      - db_data_thirdblogwsl:/var/lib/postgresql/data
+    restart: always
+    
+  db-migrator_thirdblogwsl:
+    image: alexrogna/thirdblogwsl_web:prod
+    command: ["./wait-for", "--timeout=300", "database_thirdblogwsl:5432", "--", "bin/rails", "db:create" , "db:migrate"]
+    env_file:
+      - .env/production/database_thirdblogwsl
+      - .env/production/web_thirdblogwsl
+volumes:
+  db_data_thirdblogwsl:
