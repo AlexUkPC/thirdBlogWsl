@@ -16,6 +16,8 @@ services:
       - .env/development/web_thirdblogwsl
     environment: 
       - WEBPACKER_DEV_SERVER_HOST=webpack_dev_server_thirdblogwsl
+    networks:
+      - network
   webpack_dev_server_thirdblogwsl:
     build:
       context: .
@@ -33,12 +35,18 @@ services:
       - .env/development/web_thirdblogwsl
     environment: 
       - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+    networks:
+      - network
   database_thirdblogwsl:
     image: postgres
     env_file: 
       - .env/development/database_thirdblogwsl
     volumes: 
       - db_data_thirdblogwsl:/var/lib/postgresql/data
+    networks:
+      - network
 volumes: 
   db_data_thirdblogwsl:
   gem_cache_thirdblogwsl:
+networks:
+  network:

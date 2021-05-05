@@ -11,6 +11,8 @@ services:
       - VIRTUAL_HOST=thirdblogwsl.alexrogna.com
       - VIRTUAL_PORT=3000
       - LETSENCRYPT_HOST=thirdblogwsl.alexrogna.com
+    networks:
+      - proxy
     restart: always
 
   database_thirdblogwsl:
@@ -19,6 +21,8 @@ services:
       - .env/production/database_thirdblogwsl
     volumes:
       - db_data_thirdblogwsl:/var/lib/postgresql/data
+    networks:
+      - proxy
     restart: always
     
   db-migrator_thirdblogwsl:
@@ -27,5 +31,9 @@ services:
     env_file:
       - .env/production/database_thirdblogwsl
       - .env/production/web_thirdblogwsl
+    networks:
+      - proxy
 volumes:
   db_data_thirdblogwsl:
+networks:
+  proxy:
